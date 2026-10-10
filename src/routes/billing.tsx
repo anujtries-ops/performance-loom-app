@@ -57,15 +57,15 @@ function Billing() {
   return (
     <Frame nav={false}>
       <PageHeader title="Billing & payments" />
-      <div className="bg-card px-4">
+      <div className="reference-billing bg-card px-4">
         {!a.taxVerified && (
-          <div className="my-4 rounded-lg border border-l-4 border-l-primary p-3">
+          <div className="reference-tax my-4 rounded-lg border p-3">
             <p className="font-medium">Verify your tax information</p>
             <p className="text-sm text-muted-foreground">Submit your GST number to confirm that you're a registered taxpayer. We need this info to comply with local tax regulations.</p>
-            <Button variant="plain" onClick={() => setM("tax")} className="mt-3 w-full rounded-md bg-secondary py-2 font-medium">Verify tax info</Button>
+            <Button variant="meta" onClick={() => setM("tax")} className="mt-3 w-full">Verify tax info</Button>
           </div>
         )}
-        <div className={section}><p className="font-bold">Your account</p><p className="text-muted-foreground">{a.name} ({a.id})</p></div>
+        <div className={section}><p className="font-bold">Your account</p><p className="break-words text-muted-foreground">{a.name} ({a.id})</p></div>
         <div className={section}>
           <Button variant="plain" onClick={() => setM("activity")} className="flex w-full items-start text-left">
             <span className="flex-1"><span className="block font-bold">Available funds</span><span className="text-sm text-muted-foreground">We'll deduct funds about once a day when you run ads. If funds run out, your ads will be paused.</span>
