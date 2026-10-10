@@ -181,7 +181,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--primary); outli
 .campaign-reference .campaign-detail-header p { font-size:18px; }
 .campaign-reference .campaign-detail-header p > span:first-child { color:var(--result-active); font-weight:600; }
 .campaign-reference .campaign-detail-header svg { stroke-width:1.5; }
-.campaign-reference .campaign-detail-header > button { width:30px; padding:0; }
+.campaign-reference .campaign-detail-header > button:not([role="switch"]) { width:30px; padding:0; }
 .campaign-reference .campaign-thumb { height:58px; width:58px; border-radius:8px; }
 .campaign-switch { width:54px; height:32px; border:0; box-shadow:none; }
 .campaign-switch[data-state=checked] { background:var(--result-toggle-track); }
@@ -228,7 +228,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--primary); outli
  .campaign-reference .campaign-detail-header h1 { font-size:18px; }
  .campaign-reference .campaign-detail-header p { font-size:13px; }
  .campaign-reference .campaign-thumb { width:39px; height:40px; }
- .campaign-reference .campaign-detail-header > button { width:22px; }
+ .campaign-reference .campaign-detail-header > button:not([role="switch"]) { width:22px; }
  .campaign-switch { width:37px; height:22px; }
  .campaign-switch span { width:21px; height:21px; }
  .campaign-switch[data-state=checked] span { transform:translateX(16px); }
