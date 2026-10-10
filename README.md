@@ -1,14 +1,18 @@
-# Welcome to your Lovable project
+# Performance Loom App
+
+https://github.com/anujtries-ops/meta-ad-friend.git ANALYZIE FOR CONTINUE THIS PROJECT YOU HAVE TO USE SAME ICONS TEXT FONT TOOGLE COLOURS SAME AS SCREENSHOT IMAGE APP  IN CAMPAIGN RESULT
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Live app**: https://performance-loom-app.lovable.app
+
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/f29408e6-8d17-4b3e-a8e0-ac7a54473222).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +24,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
