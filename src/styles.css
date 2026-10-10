@@ -40,6 +40,7 @@
   --color-obj-leads: var(--obj-leads);
   --color-obj-sales: var(--obj-sales);
   --color-obj-app: var(--obj-app);
+  --color-assistant: var(--assistant);
 }
 
 :root {
@@ -73,6 +74,7 @@
   --obj-leads: oklch(0.72 0.16 50);
   --obj-sales: oklch(0.72 0.14 150);
   --obj-app: oklch(0.65 0.12 300);
+  --assistant: oklch(0.62 0.24 305);
   --app-gradient: linear-gradient(115deg, oklch(0.98 0.012 25) 0%, oklch(0.965 0.017 255) 48%, oklch(0.98 0.018 160) 100%);
   --canvas: oklch(0.965 0.005 240);
   --shadow-card: 0 3px 14px oklch(0.25 0.02 240 / 7%);
@@ -165,6 +167,49 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--primary); outli
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
 
+/* Compact shared layout, preserving the reference colours and existing flows. */
+.meta-frame { max-width:760px; }
+.meta-frame-no-nav .meta-content { padding-bottom:env(safe-area-inset-bottom); }
+.meta-nav { max-width:760px; height:calc(64px + env(safe-area-inset-bottom)); }
+.meta-content { padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
+.meta-account-header { padding:16px 16px 6px; gap:10px; }
+.meta-filter-bar { padding:10px 16px 16px; gap:8px; }
+.campaign-grid { padding:0 16px 16px; gap:12px; }
+.meta-section-title { padding:12px 16px; }
+.meta-recommendation { margin:0 16px 10px; padding:16px; }
+.meta-spend-summary { margin:0 16px 12px; padding:14px 16px; }
+.meta-spend-summary > a { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) 16px; align-items:start; gap:10px; }
+.meta-opportunity-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:center; margin:-2px -16px 12px; padding:0 16px 14px; border-bottom:1px solid var(--border); }
+.assistant-icon { fill:var(--assistant); flex-shrink:0; }
+.meta-assistant-launcher { position:fixed; right:max(16px, calc((100vw - 760px) / 2 + 16px)); bottom:calc(78px + env(safe-area-inset-bottom)); z-index:31; width:52px; height:52px; border-radius:50%; background:var(--card); box-shadow:var(--shadow-card); padding:10px; }
+.meta-assistant-launcher .assistant-icon { width:32px; height:32px; }
+.meta-content input, .meta-content select, .meta-content textarea { min-width:0; max-width:100%; }
+.meta-content button > span.flex-1 { min-width:0; }
+.meta-content button > svg { flex-shrink:0; }
+.funds-body { padding:20px 16px 100px; }
+.funds-footer { padding:12px 16px calc(12px + env(safe-area-inset-bottom)); }
+.funds-footer button { height:46px; font-size:17px; }
+@media(max-width:640px) {
+ .meta-account-header { padding:12px 12px 4px; gap:8px; }
+ .meta-filter-bar { padding:10px 12px 14px; grid-template-columns:44px 100px 108px; }
+ .meta-spend-summary { margin:0 12px 10px; padding:14px; }
+ .meta-recommendation { margin:0 12px 8px; padding:14px; }
+ .meta-recommendation h2 { font-size:18px; margin-top:10px; }
+ .meta-recommendation p { margin-top:8px; }
+ .meta-recommendation > div.mt-4 { margin-top:12px; }
+ .meta-opportunity-row { margin-left:-14px; margin-right:-14px; padding-left:14px; padding-right:14px; }
+ .meta-section-title { padding:10px 12px; }
+ .meta-section-title h2 { font-size:22px; }
+ .campaign-grid { padding:0 12px 16px; gap:10px; }
+ .campaign-grid > .meta-card { padding:14px; }
+ .campaign-thumb { width:42px; height:44px; border-radius:6px; }
+ .demo-results-note { padding-left:12px; padding-bottom:8px; }
+ .meta-page-header { min-height:52px; }
+ .funds-body .mt-8 { margin-top:20px; }
+ .funds-body .h-14 { height:48px; }
+ .meta-content .space-y-2 { margin-bottom:12px; }
+}
+
 /* Campaign results reference: an unframed mobile-first detail screen. */
 :root {
  --result-link: oklch(0.53 0.115 232);
@@ -223,7 +268,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--primary); outli
 .campaign-demo-label { font-size:12px; color:var(--muted-foreground); padding-top:12px; }
 .campaign-options { display:flex; justify-content:flex-end; padding:12px 24px; background:var(--card); }
 @media(max-width:500px) {
- .campaign-reference { padding-top:18px; }
+ .campaign-reference { padding-top:0; }
  .campaign-reference .campaign-detail-header { padding:16px 12px 0; gap:8px; }
  .campaign-reference .campaign-detail-header h1 { font-size:18px; }
  .campaign-reference .campaign-detail-header p { font-size:13px; }
@@ -232,30 +277,30 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--primary); outli
  .campaign-switch { width:37px; height:22px; }
  .campaign-switch span { width:21px; height:21px; }
  .campaign-switch[data-state=checked] span { transform:translateX(16px); }
- .campaign-reference .campaign-actions { padding:25px 16px 30px; gap:12px; }
+ .campaign-reference .campaign-actions { padding:16px 12px 18px; gap:8px; }
  .campaign-reference .campaign-actions button { height:44px; font-size:18px; }
  .campaign-reference .campaign-actions svg { width:20px; height:20px; }
- .campaign-reference .campaign-detail-body { padding:0 16px 20px; }
+ .campaign-reference .campaign-detail-body { padding:0 12px 16px; }
  .campaign-reference .campaign-detail-body h2 { font-size:22px; }
  .campaign-reference .campaign-detail-body > div:first-child > button { font-size:18px; }
- .campaign-reference .meta-range { height:62px; padding:8px 14px; gap:4px; }
+ .campaign-reference .meta-range { height:54px; padding:6px; gap:2px; }
  .campaign-reference .meta-range svg { width:20px; height:20px; }
- .campaign-reference .meta-range button { height:43px; font-size:17px; padding:8px 12px; }
+ .campaign-reference .meta-range button { height:42px; font-size:15px; padding:8px; }
  .campaign-reference .meta-metrics { padding:13px 15px 5px; }
  .campaign-reference .meta-metrics strong { font-size:18px; }
  .campaign-reference .meta-metrics span { font-size:13px; line-height:18px; }
  .campaign-reference .meta-metrics > div + div { padding-left:8px; margin-left:0; }
  .campaign-reference .meta-results > .flex > button { font-size:15px; }
- .campaign-reference .campaign-reach { margin-top:20px; padding:0 20px 8px; }
+ .campaign-reference .campaign-reach { margin-top:12px; padding:0 16px 8px; }
  .campaign-reference .campaign-reach > div { padding-top:10px; padding-bottom:8px; }
  .campaign-reference .campaign-reach > div + div { padding-left:21px; }
  .campaign-reference .campaign-reach p:first-child { font-size:25px; }
  .campaign-reference .campaign-reach p + p { font-size:14px; margin-top:5px; }
  .campaign-reference .meta-results > button,.campaign-reference .campaign-setup > button { height:46px; font-size:18px; }
- .campaign-reference .campaign-detail-body > .flex.items-center.justify-between { padding-top:25px; padding-bottom:7px; }
+ .campaign-reference .campaign-detail-body > .flex.items-center.justify-between { padding-top:16px; padding-bottom:7px; }
  .campaign-reference button.text-base { font-size:18px; }
  .campaign-reference .campaign-setup { padding:0 9px; }
- .campaign-reference .campaign-setup > div { min-height:75px; padding:15px 7px; gap:12px; }
+ .campaign-reference .campaign-setup > div { min-height:64px; padding:12px 7px; gap:10px; }
  .campaign-reference .campaign-setup h3 { font-size:18px; }
  .campaign-reference .campaign-setup p { font-size:13px; line-height:18px; }
  .campaign-reference .campaign-setup svg { width:22px; height:22px; }
