@@ -185,7 +185,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--primary); outli
 .campaign-reference .campaign-thumb { height:58px; width:58px; border-radius:8px; }
 .campaign-switch { width:54px; height:32px; border:0; box-shadow:none; }
 .campaign-switch[data-state=checked] { background:var(--result-toggle-track); }
-.campaign-switch span { width:31px; height:31px; box-shadow:none; }
+.campaign-switch span { translate:none; width:31px; height:31px; box-shadow:none; }
 .campaign-switch[data-state=checked] span { background:var(--result-toggle); transform:translateX(23px); }
 .campaign-switch[data-state=unchecked] span { transform:translateX(0); }
 .campaign-reference .campaign-actions { gap:18px; padding:36px 24px 44px; }
