@@ -6,7 +6,7 @@ import { OBJECTIVES, type ObjectiveKey } from "@/lib/ads-store";
 
 export function Frame({ children, nav = true }: { children: ReactNode; nav?: boolean }) {
   return (
-    <div className="meta-frame">
+    <div className={`meta-frame ${nav ? "" : "meta-frame-no-nav"}`}>
       <div className="meta-content">{children}</div>
       {nav && <BottomNav />}
     </div>
@@ -26,11 +26,11 @@ function BottomNav() {
 export function PageHeader({ title, close, right }: { title: string; close?: boolean; right?: ReactNode }) {
   const router = useRouter();
   return (
-    <header className="sticky top-0 z-20 flex items-center gap-3 border-b bg-card px-3 py-3">
+    <header className="meta-page-header sticky top-0 z-20 grid grid-cols-[36px_minmax(0,1fr)_36px] items-center gap-2 border-b bg-card px-3 py-2">
       <Button variant="plain" aria-label="Back" onClick={() => router.history.back()} className="rounded-full p-1.5 hover:bg-muted">
         {close ? <X className="h-6 w-6" /> : <ArrowLeft className="h-6 w-6" />}
       </Button>
-      <h1 className="flex-1 truncate text-center text-lg font-semibold">{title}</h1>
+      <h1 className="min-w-0 text-center text-lg font-semibold">{title}</h1>
       <div className="min-w-9 flex justify-end">{right}</div>
     </header>
   );

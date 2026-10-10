@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Bell, ChevronDown, ChevronRight, Copy, Filter, Plus, Search, Settings, Table2, X, Lightbulb, Info, MoreVertical } from "lucide-react";
+import { Bell, ChevronDown, ChevronRight, Copy, ListFilter, Plus, Search, Settings, Table2, X, Lightbulb, Info, MoreVertical, Gauge } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { CampaignCard, statusColor } from "@/components/ads/CampaignCard";
+import { AssistantIcon } from "@/components/ads/AssistantIcon";
 import { Card, Frame } from "@/components/ads/Shell";
 import { AdPreview } from "@/components/ads/AdPreview";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -44,6 +45,7 @@ function Home() {
   const [dupOpen, setDupOpen] = useState(false);
   const [preview, setPreview] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [assistantOpen, setAssistantOpen] = useState(false);
   const [readNotifications, setReadNotifications] = useState<string[]>([]);
   const unread = DEMO_NOTIFICATIONS.length - readNotifications.length;
   const factor = DATES[date][1];
@@ -70,7 +72,7 @@ function Home() {
       </header>
 
       <div className="meta-filter-bar">
-        <Button variant="plain" aria-label="Reset filters" onClick={() => { setStatus("all"); setDate("max"); setQ(""); }} className="rounded-md border bg-card px-3 py-2"><Filter className="h-4 w-4" /></Button>
+        <Button variant="plain" aria-label="Reset filters" onClick={() => { setStatus("all"); setDate("max"); setQ(""); }} className="rounded-md border bg-card px-3 py-2"><ListFilter className="h-4 w-4" /></Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild><Button variant="metaOutline"><span className="truncate">{date === "max" ? "Date" : DATES[date][0]}</span><ChevronDown className="h-4 w-4" /></Button></DropdownMenuTrigger>
           <DropdownMenuContent>{(Object.keys(DATES) as DateKey[]).map((k) => <DropdownMenuItem key={k} onClick={() => setDate(k)}>{DATES[k][0]}</DropdownMenuItem>)}</DropdownMenuContent>
@@ -84,8 +86,12 @@ function Home() {
         </DropdownMenu>
       </div>
 
+      <Card className="meta-spend-summary">
+        <Button variant="plain" asChild className="w-full p-0 text-left"><Link to="/billing"><span className="min-w-0"><span className="block text-sm text-muted-foreground">Total amount spent</span><strong className="mt-1 block text-xl font-semibold">{money(totalSpent, acct.currency)}</strong></span><span className="min-w-0 text-sm text-muted-foreground">{acct.spendingLimit ? money(acct.spendingLimit, acct.currency) : "No spending limit"}</span><ChevronRight className="shrink-0" /></Link></Button>
+      </Card>
       {recommended && <Card className="meta-recommendation">
-        <div className="flex items-center justify-between"><span className="flex items-center gap-1 rounded-full bg-accent px-2 py-1 text-sm font-semibold text-accent-foreground"><Lightbulb className="h-4 w-4" />New recommendation</span><Button variant="ghost" size="icon" aria-label="Dismiss recommendation" onClick={() => actions.dismissRecommendation(recommended.id)}><MoreVertical /></Button></div>
+        <Link to="/recommendations" className="meta-opportunity-row"><span className="flex min-w-0 items-center gap-2"><Gauge className="h-7 w-7 shrink-0 text-primary" /><span className="min-w-0 font-semibold">Recommendations</span></span><span className="flex items-center gap-2 text-sm text-muted-foreground">{mine.reduce((sum, c) => sum + c.recommendations, 0)}<span className="h-1.5 w-1.5 rounded-full bg-destructive" /><ChevronRight className="h-4 w-4" /></span></Link>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2"><span className="flex min-w-0 items-center gap-1 text-sm font-semibold text-accent-foreground"><Lightbulb className="h-4 w-4 shrink-0" />New recommendation</span><Button variant="metaOutline" onClick={() => setAssistantOpen(true)} className="h-9 px-2"><AssistantIcon />Analyze</Button><Button variant="ghost" size="icon" aria-label="Dismiss recommendation" onClick={() => actions.dismissRecommendation(recommended.id)}><MoreVertical /></Button></div>
         <h2 className="mt-3 max-w-2xl text-xl font-bold leading-snug">Explore more Advantage+ creative enhancements</h2>
         <p className="mt-3 text-base">Potential outcome: <span className="font-semibold text-tint">More ways to connect with your audience</span></p>
         <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">Creative recommendation <Info className="h-3.5 w-3.5" /></p>
@@ -145,6 +151,8 @@ function Home() {
       </Sheet>
       <DuplicateSheet open={dupOpen} onOpenChange={setDupOpen} />
       <Notifications open={notificationsOpen} onOpenChange={setNotificationsOpen} read={readNotifications} onRead={setReadNotifications} campaignId={mine[0]?.id} />
+      <Button variant="outline" size="icon" aria-label="Open assistant" title="Assistant" className="meta-assistant-launcher" onClick={() => setAssistantOpen(true)}><AssistantIcon /></Button>
+      <Dialog open={assistantOpen} onOpenChange={setAssistantOpen}><DialogContent><DialogHeader><DialogTitle className="flex items-center gap-2"><AssistantIcon className="h-6 w-6" />Campaign assistant</DialogTitle></DialogHeader><p className="text-xs text-muted-foreground">Demo assistant · Not connected to Meta AI</p><p>{recommended ? "Explore more Advantage+ creative enhancements" : "No recommendations available"}</p>{recommended && <Button variant="meta" onClick={() => { setAssistantOpen(false); nav({ to: "/recommendations" }); }}>Review recommendations<ChevronRight /></Button>}</DialogContent></Dialog>
     </Frame>
   );
 }
