@@ -164,3 +164,99 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--primary); outli
  .campaign-stat-grid { font-size:12px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+
+/* Campaign results reference: an unframed mobile-first detail screen. */
+:root {
+ --result-link: oklch(0.53 0.115 232);
+ --result-toggle: oklch(0.55 0.15 241);
+ --result-toggle-track: oklch(0.87 0.055 241);
+ --result-active: oklch(0.43 0.085 169);
+ --result-card-shadow: 0 2px 14px oklch(0.3 0.025 260 / 12%);
+}
+.meta-frame:has(.campaign-reference) { max-width:590px; }
+.meta-frame:has(.campaign-reference) .meta-content { padding-bottom:0; }
+.campaign-reference { min-height:100dvh; padding-top:38px; }
+.campaign-reference .campaign-detail-header { padding:24px 18px 0; gap:12px; }
+.campaign-reference .campaign-detail-header h1 { font-size:24px; font-weight:400; }
+.campaign-reference .campaign-detail-header p { font-size:18px; }
+.campaign-reference .campaign-detail-header p > span:first-child { color:var(--result-active); font-weight:600; }
+.campaign-reference .campaign-detail-header svg { stroke-width:1.5; }
+.campaign-reference .campaign-detail-header > button { width:30px; padding:0; }
+.campaign-reference .campaign-thumb { height:58px; width:58px; border-radius:8px; }
+.campaign-switch { width:54px; height:32px; border:0; box-shadow:none; }
+.campaign-switch[data-state=checked] { background:var(--result-toggle-track); }
+.campaign-switch span { width:31px; height:31px; box-shadow:none; }
+.campaign-switch[data-state=checked] span { background:var(--result-toggle); transform:translateX(23px); }
+.campaign-switch[data-state=unchecked] span { transform:translateX(0); }
+.campaign-reference .campaign-actions { gap:18px; padding:36px 24px 44px; }
+.campaign-reference .campaign-actions button { height:66px; font-size:25px; font-weight:400; background:color-mix(in oklab,var(--card) 55%,transparent); }
+.campaign-reference .campaign-actions svg { width:26px; height:26px; stroke-width:1.5; }
+.campaign-reference .campaign-detail-body { padding:0 24px 28px; }
+.campaign-reference .campaign-detail-body h2 { font-size:29px; }
+.campaign-reference .campaign-detail-body > div:first-child { padding-top:10px; padding-bottom:0; }
+.campaign-reference .campaign-detail-body > div > button[data-slot], .campaign-reference button.text-base { font-size:24px; }
+.campaign-reference button.text-primary { color:var(--result-link); }
+.campaign-reference .campaign-detail-body > div:first-child > button { font-size:26px; font-weight:400; }
+.campaign-reference .meta-card { box-shadow:var(--result-card-shadow); border-radius:6px; }
+.campaign-reference .meta-range { height:91px; padding:12px 26px; gap:8px; }
+.campaign-reference .meta-range svg { width:25px; height:25px; stroke-width:1.5; }
+.campaign-reference .meta-range button { height:64px; padding:12px 20px; font-size:24px; font-weight:400; }
+.campaign-reference .meta-range button[aria-pressed=true] { color:var(--result-link); font-weight:600; }
+.campaign-reference .meta-metrics { padding:19px 23px 7px; grid-template-columns:1fr 1.1fr 1fr; }
+.campaign-reference .meta-metrics strong { font-size:25px; font-weight:650; white-space:nowrap; }
+.campaign-reference .meta-metrics span { font-size:18px; line-height:25px; }
+.campaign-reference .meta-metrics > div + div { padding-left:12px; }
+.campaign-reference .meta-results > .flex > button { font-size:21px; font-weight:400; gap:0; padding-right:0; }
+.campaign-reference .campaign-reach { margin-top:30px; padding:0 29px 12px; }
+.campaign-reference .campaign-reach > div { padding-top:14px; padding-bottom:12px; }
+.campaign-reference .campaign-reach > div + div { padding-left:31px; }
+.campaign-reference .campaign-reach p:first-child { font-size:34px; font-weight:650; }
+.campaign-reference .campaign-reach p + p { font-size:19px; margin-top:7px; }
+.campaign-reference .meta-results > button, .campaign-reference .campaign-setup > button { height:67px; font-size:24px; font-weight:400; }
+.campaign-reference .meta-results > button svg, .campaign-reference .campaign-setup > button svg { width:20px; height:20px; }
+.campaign-reference .campaign-detail-body > .flex.items-center.justify-between { padding-top:40px; padding-bottom:11px; }
+.campaign-reference .campaign-setup { padding:0 13px; }
+.campaign-reference .campaign-setup > div { min-height:108px; padding:22px 10px; gap:18px; }
+.campaign-reference .campaign-setup h3 { font-size:24px; font-weight:400; }
+.campaign-reference .campaign-setup p { font-size:18px; line-height:26px; }
+.campaign-reference .campaign-setup svg { width:27px; height:27px; stroke-width:1.5; }
+.campaign-demo-label { font-size:12px; color:var(--muted-foreground); padding-top:12px; }
+.campaign-options { display:flex; justify-content:flex-end; padding:12px 24px; background:var(--card); }
+@media(max-width:500px) {
+ .campaign-reference { padding-top:18px; }
+ .campaign-reference .campaign-detail-header { padding:16px 12px 0; gap:8px; }
+ .campaign-reference .campaign-detail-header h1 { font-size:18px; }
+ .campaign-reference .campaign-detail-header p { font-size:13px; }
+ .campaign-reference .campaign-thumb { width:39px; height:40px; }
+ .campaign-reference .campaign-detail-header > button { width:22px; }
+ .campaign-switch { width:37px; height:22px; }
+ .campaign-switch span { width:21px; height:21px; }
+ .campaign-switch[data-state=checked] span { transform:translateX(16px); }
+ .campaign-reference .campaign-actions { padding:25px 16px 30px; gap:12px; }
+ .campaign-reference .campaign-actions button { height:44px; font-size:18px; }
+ .campaign-reference .campaign-actions svg { width:20px; height:20px; }
+ .campaign-reference .campaign-detail-body { padding:0 16px 20px; }
+ .campaign-reference .campaign-detail-body h2 { font-size:22px; }
+ .campaign-reference .campaign-detail-body > div:first-child > button { font-size:18px; }
+ .campaign-reference .meta-range { height:62px; padding:8px 14px; gap:4px; }
+ .campaign-reference .meta-range svg { width:20px; height:20px; }
+ .campaign-reference .meta-range button { height:43px; font-size:17px; padding:8px 12px; }
+ .campaign-reference .meta-metrics { padding:13px 15px 5px; }
+ .campaign-reference .meta-metrics strong { font-size:18px; }
+ .campaign-reference .meta-metrics span { font-size:13px; line-height:18px; }
+ .campaign-reference .meta-metrics > div + div { padding-left:8px; margin-left:0; }
+ .campaign-reference .meta-results > .flex > button { font-size:15px; }
+ .campaign-reference .campaign-reach { margin-top:20px; padding:0 20px 8px; }
+ .campaign-reference .campaign-reach > div { padding-top:10px; padding-bottom:8px; }
+ .campaign-reference .campaign-reach > div + div { padding-left:21px; }
+ .campaign-reference .campaign-reach p:first-child { font-size:25px; }
+ .campaign-reference .campaign-reach p + p { font-size:14px; margin-top:5px; }
+ .campaign-reference .meta-results > button,.campaign-reference .campaign-setup > button { height:46px; font-size:18px; }
+ .campaign-reference .campaign-detail-body > .flex.items-center.justify-between { padding-top:25px; padding-bottom:7px; }
+ .campaign-reference button.text-base { font-size:18px; }
+ .campaign-reference .campaign-setup { padding:0 9px; }
+ .campaign-reference .campaign-setup > div { min-height:75px; padding:15px 7px; gap:12px; }
+ .campaign-reference .campaign-setup h3 { font-size:18px; }
+ .campaign-reference .campaign-setup p { font-size:13px; line-height:18px; }
+ .campaign-reference .campaign-setup svg { width:22px; height:22px; }
+}
