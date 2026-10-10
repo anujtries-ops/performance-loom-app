@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Lightbulb, MoreVertical, BadgePlus } from "lucide-react";
+import { ChevronRight, CircleArrowUp, MoreVertical, BadgePlus } from "lucide-react";
 import { toast } from "sonner";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { actions, money, num, OBJECTIVES, STATUS_LABEL, type Campaign } from "@/lib/ads-store";
@@ -53,7 +53,7 @@ export function CampaignCard({ c, currency, factor }: { c: Campaign; currency: "
       </div>
       {c.recommendations > 0 && (
         <Link to="/recommendations" className="mt-3 flex items-center gap-2 rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-foreground">
-          <Lightbulb className="h-4 w-4" /><span className="flex-1">{c.recommendations} recommendation{c.recommendations > 1 ? "s" : ""}</span><ChevronRight className="h-4 w-4" />
+          <CircleArrowUp className="h-5 w-5 shrink-0" /><span className="min-w-0 flex-1">{c.recommendations} recommendation{c.recommendations > 1 ? "s" : ""}<span className="block text-xs font-normal">+18 points</span></span><ChevronRight className="h-4 w-4 shrink-0" />
         </Link>
       )}
     </Card>

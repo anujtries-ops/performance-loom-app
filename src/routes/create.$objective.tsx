@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Check } from "lucide-react";
+import { Check, Pencil, CreditCard, CalendarDays, Users, Target, PanelsTopLeft, BriefcaseBusiness, LayoutGrid, ChevronDown, ChevronUp, CircleAlert } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AdPreview } from "@/components/ads/AdPreview";
 import { Card, Frame, ObjectiveIcon, PageHeader } from "@/components/ads/Shell";
 import { actions, CTAS, money, OBJECTIVES, useAds, useCurrentAccount, type Campaign, type ObjectiveKey } from "@/lib/ads-store";
+import { OrderConfirmation } from "@/components/ads/OrderConfirmation";
 
 export const Route = createFileRoute("/create/$objective")({
   validateSearch: (s: Record<string, unknown>): { edit?: string } => (typeof s["edit"] === "string" ? { edit: s["edit"] as string } : {}),
@@ -34,6 +35,10 @@ function Builder() {
   const existing = useAds((s) => s.campaigns.find((c) => c.id === edit));
   const nav = useNavigate();
   const [step, setStep] = useState(0);
+  const [campaignExpanded, setCampaignExpanded] = useState(false);
+  const [setExpanded, setSetExpanded] = useState(true);
+  const [previewExpanded, setPreviewExpanded] = useState(false);
+  const [publishedId, setPublishedId] = useState<string | null>(null);
   type Form = Omit<Campaign, "id" | "results" | "spent" | "impressions" | "reach" | "clicks" | "createdAt" | "recommendations" | "status">;
   const [f, setF] = useState<Form>(() => existing ?? {
     accountId: acct.id,
@@ -71,11 +76,11 @@ function Builder() {
     if (existing) {
       actions.updateCampaign(existing.id, f);
       toast.success("Changes published");
-      nav({ to: "/campaign/$id", params: { id: existing.id } });
+      setPublishedId(existing.id);
     } else {
       const id = actions.createCampaign({ ...f, accountId: acct.id });
       toast.success("Campaign published · In review", { description: acct.paymentMethods.length ? "Your ad will start running after review." : "Add a payment method so your ads can run." });
-      nav({ to: "/campaign/$id", params: { id } });
+      setPublishedId(id);
     }
   };
 
@@ -84,16 +89,16 @@ function Builder() {
 
   return (
     <Frame nav={false}>
-      <PageHeader title={existing ? "Edit campaign" : OBJECTIVES[obj].label} close />
-      <div className="flex gap-1 overflow-x-auto bg-card px-3 pb-3">
+      <PageHeader title={step === 5 ? "Review new campaign" : existing ? "Edit campaign" : OBJECTIVES[obj].label} close={step !== 5} />
+      {step !== 5 && <div className="flex gap-1 overflow-x-auto bg-card px-3 pb-3">
         {STEPS.map((s, i) => (
           <Button variant="plain" key={s} onClick={() => setStep(i)} className={`flex shrink-0 items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${i === step ? "bg-primary text-primary-foreground" : i < step ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"}`}>
             {i < step && <Check className="h-3 w-3" />}{s}
           </Button>
         ))}
-      </div>
+      </div>}
 
-      <div className="space-y-4 p-4">
+      <div className={step === 5 ? "reference-review" : "space-y-4 p-4 pb-24"}>
         {step === 0 && (
           <Card className="space-y-4 p-4">
             <div className="flex items-center gap-3"><ObjectiveIcon k={obj} /><div><p className="font-medium">{OBJECTIVES[obj].label}</p><p className="text-xs text-muted-foreground">{OBJECTIVES[obj].desc}</p></div></div>
@@ -155,31 +160,21 @@ function Builder() {
         )}
         {step === 5 && (
           <>
-          <div className="flex items-center gap-3">{f.ad.image && <img src={f.ad.image} alt="Campaign thumbnail preview" className="campaign-thumb" />}<span className="text-lg font-medium">{f.name}</span></div>
-          <Card className="divide-y p-0 text-sm">
-            {[
-              ["Campaign", f.name],
-              ["Objective", OBJECTIVES[obj].label],
-              ...(f.conversionLocation === "website" ? [["Conversion location", "Website"], ["Conversion event", f.conversionEvent ?? "Subscribe"]] : []),
-              ["Budget", `${money(f.budget, acct.currency)} ${f.budgetType}`],
-              ["Schedule", `${f.startDate} → ${f.endDate ?? "Ongoing"}`],
-              ["Audience", `${f.audience.location}, ${f.audience.ageMin}–${f.audience.ageMax}, ${f.audience.gender}`],
-              ["Placements", f.placements === "advantage" ? "Advantage+" : f.platforms.join(", ")],
-              ["Ad", f.ad.headline || "—"],
-            ].map(([k, v]) => <div key={k} className="flex justify-between gap-4 p-3"><span className="text-muted-foreground">{k}</span><span className="text-right font-medium">{v}</span></div>)}
-            {errors.length > 0 && <ul className="space-y-1 p-3 text-destructive">{errors.map((e) => <li key={e}>• {e}</li>)}</ul>}
-          </Card>
-          <AdPreview name={acct.name} ad={f.ad} />
+          <section className="reference-review-preview"><div className="grid grid-cols-[minmax(0,1fr)_auto] items-center"><h2 className="text-xl font-semibold">Ad Preview</h2><Button variant="link" onClick={() => setPreviewExpanded(value => !value)}>{previewExpanded ? "See less" : "See all"}</Button></div>{previewExpanded ? <AdPreview name={acct.name} ad={f.ad} /> : <div className="reference-preview-strip">{["Facebook", "Instagram"].map(platform => <Button variant="plain" key={platform} aria-label={`Preview on ${platform}`} onClick={() => setPreviewExpanded(true)} className="reference-preview-phone">{f.ad.image ? <img src={f.ad.image} alt={`${platform} ad preview`} /> : <span><ObjectiveIcon k={obj} /><span className="mt-3 text-xs">{platform}</span></span>}</Button>)}</div>}</section>
+          <section className="reference-review-band"><h2><BriefcaseBusiness />{f.name}</h2><div className="reference-review-row"><CreditCard /><div><h3>Budget</h3><p>{money(f.budget, acct.currency)} {acct.currency} {f.budgetType === "daily" ? "per day" : "lifetime"}, Highest volume</p></div><Button variant="ghost" size="icon" aria-label="Edit budget" onClick={() => setStep(1)}><Pencil /></Button></div><div className="reference-review-row"><CircleAlert /><div><h3>Campaign details</h3><p>Auction · {OBJECTIVES[obj].label}</p></div><span /></div>{campaignExpanded && <div className="reference-review-row"><CircleAlert /><div><h3>Special ad category</h3><p>None</p></div><Button variant="ghost" size="icon" aria-label="Edit campaign details" onClick={() => setStep(0)}><Pencil /></Button></div>}<Button variant="plain" className="reference-review-expand" onClick={() => setCampaignExpanded(value => !value)}>{campaignExpanded ? <ChevronUp /> : <ChevronDown />}{campaignExpanded ? "Show less" : "Show more"}</Button></section>
+          <section className="reference-review-band"><h2><LayoutGrid />New {OBJECTIVES[obj].label} Ad Set</h2>{setExpanded && <>{[{ icon: CalendarDays, title: "Schedule", value: `${f.startDate} – ${f.endDate ?? "ongoing"}`, edit: 1 }, { icon: Users, title: "Audience", value: `${f.audience.location}, ${f.audience.ageMin}–${f.audience.ageMax}, ${f.audience.gender}`, edit: 2 }, { icon: Target, title: "Conversion", value: f.conversionLocation === "website" ? `Website · ${f.conversionEvent ?? "Subscribe"}` : "Message destination", edit: 0 }, { icon: PanelsTopLeft, title: "Placements", value: f.placements === "advantage" ? "Advantage+ placements" : f.platforms.join(", "), edit: 3 }].map(({ icon: Icon, title, value, edit: editStep }) => <div className="reference-review-row" key={title}><Icon /><div><h3>{title}</h3><p>{value}</p></div><Button variant="ghost" size="icon" aria-label={`Edit ${title.toLowerCase()}`} onClick={() => setStep(editStep)}><Pencil /></Button></div>)}</>}<Button variant="plain" className="reference-review-expand" onClick={() => setSetExpanded(value => !value)}>{setExpanded ? <ChevronUp /> : <ChevronDown />}{setExpanded ? "Show less" : "Show more"}</Button></section>
+          {errors.length > 0 && <ul className="space-y-1 p-4 text-sm text-destructive">{errors.map(e => <li key={e}>• {e}</li>)}</ul>}
           </>
         )}
       </div>
 
-      <div className="fixed bottom-0 left-1/2 z-30 flex w-full max-w-[1120px] -translate-x-1/2 gap-2 border-t bg-card p-3">
-        {step > 0 && <Button variant="plain" onClick={() => setStep(step - 1)} className="flex-1 rounded-md bg-secondary py-2.5 font-medium">Back</Button>}
+      <div className="reference-builder-footer">
+        {step > 0 && step !== 5 && <Button variant="plain" onClick={() => setStep(step - 1)} className="flex-1 rounded-md bg-secondary py-2.5 font-medium">Back</Button>}
         {step < STEPS.length - 1
            ? <Button variant="meta" onClick={() => setStep(step + 1)} className="flex-1">Next</Button>
-           : <Button variant="meta" onClick={publish} className="flex-1">{existing ? "Publish changes" : "Publish"}</Button>}
+           : <Button variant="publish" onClick={publish} className="flex-1">{existing ? "Publish changes" : "Publish"}</Button>}
       </div>
+      <OrderConfirmation open={publishedId !== null} onClose={() => { if (publishedId) nav({ to: "/campaign/$id", params: { id: publishedId } }); }} onDuplicate={() => { if (!publishedId) return; const id = actions.duplicateCampaign(publishedId); if (id) nav({ to: "/campaign/$id", params: { id } }); }} />
     </Frame>
   );
 }

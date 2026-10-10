@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Bell, ChevronDown, ChevronRight, Copy, ListFilter, Plus, Search, Settings, Table2, X, Lightbulb, Info, MoreVertical, Gauge } from "lucide-react";
+import { Bell, ChevronDown, ChevronRight, Copy, ListFilter, Plus, Search, Settings, Table2, X, Info, MoreVertical, Gauge, CircleArrowUp, MonitorUp } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ReferenceFilters } from "@/components/ads/ReferenceFilters";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { CampaignCard, statusColor } from "@/components/ads/CampaignCard";
 import { AssistantIcon } from "@/components/ads/AssistantIcon";
@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { DuplicateSheet } from "@/components/ads/DuplicateSheet";
 import { Notifications } from "@/components/ads/Notifications";
 import { DEMO_NOTIFICATIONS } from "@/lib/ads-demo";
-import { actions, money, num, OBJECTIVES, STATUS_LABEL, useAds, useCurrentAccount, type CampaignStatus } from "@/lib/ads-store";
+import { actions, money, num, OBJECTIVES, STATUS_LABEL, useAds, useCurrentAccount } from "@/lib/ads-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,7 +37,9 @@ function Home() {
   const all = useAds((s) => s.campaigns);
   const nav = useNavigate();
   const [date, setDate] = useState<DateKey>("max");
-  const [status, setStatus] = useState<CampaignStatus | "all">("all");
+  const [status, setStatus] = useState("all");
+  const [filterOpen, setFilterOpen] = useState<"status" | "date" | "custom" | null>(null);
+  const [dateLabel, setDateLabel] = useState("Date");
   const [q, setQ] = useState("");
   const [searching, setSearching] = useState(false);
   const [table, setTable] = useState(false);
@@ -72,31 +74,24 @@ function Home() {
       </header>
 
       <div className="meta-filter-bar">
-        <Button variant="plain" aria-label="Reset filters" onClick={() => { setStatus("all"); setDate("max"); setQ(""); }} className="rounded-md border bg-card px-3 py-2"><ListFilter className="h-4 w-4" /></Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild><Button variant="metaOutline"><span className="truncate">{date === "max" ? "Date" : DATES[date][0]}</span><ChevronDown className="h-4 w-4" /></Button></DropdownMenuTrigger>
-          <DropdownMenuContent>{(Object.keys(DATES) as DateKey[]).map((k) => <DropdownMenuItem key={k} onClick={() => setDate(k)}>{DATES[k][0]}</DropdownMenuItem>)}</DropdownMenuContent>
-        </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild><Button variant="metaOutline"><span className="truncate">{status === "all" ? "Status" : STATUS_LABEL[status]}</span><ChevronDown className="h-4 w-4" /></Button></DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => setStatus("all")}>All</DropdownMenuItem>
-            {(Object.keys(STATUS_LABEL) as CampaignStatus[]).map((k) => <DropdownMenuItem key={k} onClick={() => setStatus(k)}>{STATUS_LABEL[k]}</DropdownMenuItem>)}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button variant="metaOutline" aria-label="Filters" onClick={() => setFilterOpen("custom")}><ListFilter /></Button>
+        <Button variant="metaOutline" onClick={() => setFilterOpen("date")}><span className="truncate">{dateLabel}</span><ChevronDown /></Button>
+        <Button variant="metaOutline" onClick={() => setFilterOpen("status")}><span className="truncate">{status === "all" ? "Status" : status.replaceAll("_", " ").replace("paused", "Off")}</span><ChevronDown /></Button>
       </div>
+      <ReferenceFilters open={filterOpen} onClose={() => setFilterOpen(null)} status={status} onStatus={setStatus} onDate={(value, label) => { setDate(value); setDateLabel(label === "Maximum" ? "Date" : label); }} />
 
       <Card className="meta-spend-summary">
         <Button variant="plain" asChild className="w-full p-0 text-left"><Link to="/billing"><span className="min-w-0"><span className="block text-sm text-muted-foreground">Total amount spent</span><strong className="mt-1 block text-xl font-semibold">{money(totalSpent, acct.currency)}</strong></span><span className="min-w-0 text-sm text-muted-foreground">{acct.spendingLimit ? money(acct.spendingLimit, acct.currency) : "No spending limit"}</span><ChevronRight className="shrink-0" /></Link></Button>
       </Card>
       {recommended && <Card className="meta-recommendation">
-        <Link to="/recommendations" className="meta-opportunity-row"><span className="flex min-w-0 items-center gap-2"><Gauge className="h-7 w-7 shrink-0 text-primary" /><span className="min-w-0 font-semibold">Recommendations</span></span><span className="flex items-center gap-2 text-sm text-muted-foreground">{mine.reduce((sum, c) => sum + c.recommendations, 0)}<span className="h-1.5 w-1.5 rounded-full bg-destructive" /><ChevronRight className="h-4 w-4" /></span></Link>
-        <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2"><span className="flex min-w-0 items-center gap-1 text-sm font-semibold text-accent-foreground"><Lightbulb className="h-4 w-4 shrink-0" />New recommendation</span><Button variant="metaOutline" onClick={() => setAssistantOpen(true)} className="h-9 px-2"><AssistantIcon />Analyze</Button><Button variant="ghost" size="icon" aria-label="Dismiss recommendation" onClick={() => actions.dismissRecommendation(recommended.id)}><MoreVertical /></Button></div>
+        <Link to="/recommendations" className="meta-opportunity-row"><span className="min-w-0"><span className="block text-xs text-muted-foreground">Opportunity score</span><span className="flex items-center gap-1"><Gauge className="h-8 w-8 shrink-0 text-primary" /><strong className="text-2xl">82</strong><span className="text-sm text-muted-foreground">points</span></span></span><span className="flex items-center gap-1 text-sm"><strong>{mine.reduce((sum, c) => sum + c.recommendations, 0)}</strong><span className="text-muted-foreground">recommendations</span><span className="h-1.5 w-1.5 rounded-full bg-destructive" /></span></Link>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-1"><span className="flex min-w-0 flex-wrap items-center gap-1 text-xs font-semibold text-accent-foreground"><span className="reference-points"><CircleArrowUp className="h-3.5 w-3.5" />+18 points</span><span className="reference-points">New</span></span><Button variant="metaOutline" onClick={() => setAssistantOpen(true)} className="h-9 px-2"><AssistantIcon />Analyze</Button><Button variant="metaOutline" size="icon" aria-label="Dismiss recommendation" onClick={() => actions.dismissRecommendation(recommended.id)}><MoreVertical /></Button></div>
         <h2 className="mt-3 max-w-2xl text-xl font-bold leading-snug">Explore more Advantage+ creative enhancements</h2>
         <p className="mt-3 text-base">Potential outcome: <span className="font-semibold text-tint">More ways to connect with your audience</span></p>
         <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">Creative recommendation <Info className="h-3.5 w-3.5" /></p>
         <div className="mt-4 flex min-w-0 items-center gap-3 border-t pt-4">{recommended.ad.image && <img src={recommended.ad.image} className="h-8 w-8 shrink-0 rounded object-cover" alt="Recommended ad" />}<span className="min-w-0 truncate">{recommended.name}</span></div>
-        <div className="mt-4 flex gap-3"><Button variant="metaOutline" className="h-11 flex-1 text-base" onClick={() => setPreview(true)}>Preview</Button><Button variant="meta" className="h-11 flex-[1.5] text-base" onClick={() => nav({ to: "/recommendations" })}>Review now</Button></div>
+        <Button variant="metaOutline" className="mt-3 h-11 w-full text-base" onClick={() => { setPreview(true); toast("Demo ad preview opened; desktop transfer is not connected."); }}><MonitorUp />Send to desktop</Button>
+        <Button variant="link" className="mt-1 h-8 w-full" onClick={() => nav({ to: "/recommendations" })}>Review recommendations</Button>
       </Card>}
       <div className="meta-section-title">
         <h2>Campaigns</h2>

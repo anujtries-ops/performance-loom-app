@@ -13,3 +13,4 @@
 - Keep campaign-detail visual rules in src/styles.css and use shared Button and Switch controls so the reference treatment stays consistent.
 - Keep compact screen spacing in the shared stylesheet, and make plain text-row buttons auto-height and wrapping so long content cannot clip on phones.
 - Reuse AssistantIcon for reference-style assistant controls; the assistant presents existing demo recommendations, not a live AI service.
+- Keep reference filter sheets and order confirmation in shared presentation components; they must not imply live Meta review, reporting, or AI connections.
