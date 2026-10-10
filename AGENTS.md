@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Preserve the imported Ads Manager frontend routes and shared demo store; they retain the user's existing workflows without implying a live advertising connection.
+- Keep campaign-detail visual rules in src/styles.css and use shared Button and Switch controls so the reference treatment stays consistent.
